@@ -89,6 +89,8 @@
     "src/**/*.{js,ts}": "eslint -f ./node_modules/eslint-friendly-formatter"
   },
   "jest": {
-    "transform": { "^.+\\.(t|j)s$": "ts-jest" }
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    }
   }
 }
