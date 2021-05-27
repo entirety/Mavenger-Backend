@@ -1,0 +1,60 @@
+{
+  "root": true,
+  "ignorePatterns": ["*.d.ts", "dist/*", "**/node_modules/*"],
+  "plugins": [
+    "jest"
+  ],
+  "extends" : [
+    "airbnb-typescript/base",
+    "@edenjs/eden"
+  ],
+  "parserOptions": {
+    "project": ["./tsconfig.json"]
+  },
+  "settings": {
+    "import/extensions": [
+      ".js", ".ts", ".d.ts"
+    ]
+  },
+  "env": {
+    "jest": true,
+    "node": true
+  },
+  "globals": {
+    "Symbol": "readonly",
+    "Promise": "readonly",
+    "Reflect": "readonly",
+    "WeakSet": "readonly"
+  },
+  "rules": {
+    "max-len": "off",
+    "no-empty": "off",
+    "no-bitwise": "off",
+    "no-console": "off",
+    "comma-dangle": "off",
+    "import/order": "off",
+    "global-require": "off",
+    "consistent-return": "off",
+    "no-empty-function": "off",
+    "no-underscore-dangle": "off",
+    "object-curly-newline": "off",
+    "no-prototype-builtins": "off",
+    "no-useless-constructor": "off",
+    "newline-per-chained-call": "off",
+    "import/no-dynamic-require": "off",
+    "lines-between-class-members": "off",
+    "import/prefer-default-export": "off",
+    "@typescript-eslint/comma-dangle": "off",
+    "import/no-extraneous-dependencies": "off",
+    "@typescript-eslint/lines-between-class-members": "off",
+
+    "key-spacing": ["error", {
+      "beforeColon": false
+    }],
+
+    "import/extensions": ["error", "ignorePackages", {
+      "js": "never",
+      "ts": "never"
+    }]
+  }
+}
