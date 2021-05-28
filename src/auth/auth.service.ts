@@ -9,11 +9,10 @@ import { UserGroups } from './user-groups.enum';
 export class AuthService {
   constructor(@InjectModel(User.name) private readonly UserModel: Model<UserDocument>) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto): Promise<void> {
     const createdUser = new this.UserModel(createUserDto);
     createdUser.role = UserGroups.UNVERIFIED;
-
-    return createdUser.save();
+    await createdUser.save();
   }
 
   async getUserById(id: string): Promise<User> {
