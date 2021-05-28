@@ -1,20 +1,13 @@
 {
   "root": true,
   "ignorePatterns": ["*.d.ts", "dist/*", "**/node_modules/*"],
-  "plugins": [
-    "jest"
-  ],
-  "extends" : [
-    "airbnb-typescript/base",
-    "@edenjs/eden"
-  ],
+  "plugins": ["jest"],
+  "extends": ["airbnb-typescript/base", "@edenjs/eden"],
   "parserOptions": {
     "project": ["./tsconfig.json"]
   },
   "settings": {
-    "import/extensions": [
-      ".js", ".ts", ".d.ts"
-    ]
+    "import/extensions": [".js", ".ts", ".d.ts"]
   },
   "env": {
     "jest": true,
@@ -48,13 +41,20 @@
     "import/no-extraneous-dependencies": "off",
     "@typescript-eslint/lines-between-class-members": "off",
 
-    "key-spacing": ["error", {
-      "beforeColon": false
-    }],
+    "key-spacing": [
+      "error",
+      {
+        "beforeColon": false
+      }
+    ],
 
-    "import/extensions": ["error", "ignorePackages", {
-      "js": "never",
-      "ts": "never"
-    }]
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "ts": "never"
+      }
+    ]
   }
 }

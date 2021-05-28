@@ -2,6 +2,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 // Import local dependencies
 import { AppModule } from './app.module';
@@ -29,6 +30,9 @@ async function bootstrap(): Promise<void> {
 
   // Load server config
   const server = app.get(ConfigService).get<ServerConfig>('server');
+
+  // Initialize validation pipes
+  app.useGlobalPipes(new ValidationPipe());
 
   // Run app
   await app.listen(server.port, server.host);

@@ -1,9 +1,6 @@
 // Import configs
-import server from './mongodb.config';
-import mongodb from './server.config';
+import server from './server.config';
+import mongodb from './mongodb.config';
 
 // Export configs
-export default [
-  server,
-  mongodb
-];
+export default [server, mongodb];
