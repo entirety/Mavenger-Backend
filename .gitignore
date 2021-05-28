@@ -56,3 +56,6 @@ CVS
 
 # Husky
 .husky
+
+# Converage
+/coverage
