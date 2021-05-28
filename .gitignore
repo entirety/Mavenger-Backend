@@ -48,8 +48,7 @@ config.gypi
 CVS
 
 # Env
-.env
-.env.*
+.env*.local
 
 # nestjs
 /dist

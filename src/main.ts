@@ -1,9 +1,11 @@
 // Import dependencies
 import { NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 // Import local dependencies
 import { AppModule } from './app.module';
+import { ServerConfig } from './config/server.config';
 
 /**
  * Bootstraps the Main app
@@ -25,8 +27,11 @@ async function bootstrap(): Promise<void> {
   // Setup Swagger
   SwaggerModule.setup('api', app, document);
 
+  // Load server config
+  const server = app.get(ConfigService).get<ServerConfig>('server');
+
   // Run app
-  await app.listen(5000);
+  await app.listen(server.port, server.host);
 
   // Log running
   console.log(`Application is running on: ${await app.getUrl()}`);
