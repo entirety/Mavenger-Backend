@@ -1,10 +1,11 @@
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { UserGroups } from './user-groups.enum';
+import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 
 @Injectable()
 export class AuthService {
@@ -29,6 +30,16 @@ export class AuthService {
         throw new InternalServerErrorException();
       }
     }
+  }
+
+  async signIn(authCredentialsDto: AuthCredentialsDto): Promise<string> {
+    const { username, password } = authCredentialsDto;
+    const user = await this.UserModel.findOne({ username: { $regex: new RegExp(`^${username.toLowerCase()}`, 'i') } });
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return 'success'; // @todo: implement JWT and return token
+    }
+    throw new UnauthorizedException('Please check your login credentials');
   }
 
   async getUserById(id: string): Promise<User> {
