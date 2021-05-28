@@ -7,8 +7,8 @@ import { User } from './schemas/user.schema';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<void> {
+  @Post('/signup')
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<void> {
     await this.authService.createUser(createUserDto);
   }
 
