@@ -33,6 +33,7 @@ const ENV = process.env.NODE_ENV;
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('mongodb.uri'),
+        useCreateIndex: true,
       }),
       inject: [ConfigService],
     }),
