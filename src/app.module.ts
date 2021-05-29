@@ -16,7 +16,7 @@ const ENV = process.env.NODE_ENV;
 @Module({
   imports: [
     HelloWorldModule,
-
+    AuthModule,
     ConfigModule.forRoot({
       load: configs,
       isGlobal: true,
@@ -36,8 +36,6 @@ const ENV = process.env.NODE_ENV;
       }),
       inject: [ConfigService],
     }),
-
-    AuthModule,
   ],
 })
 export class AppModule {}
