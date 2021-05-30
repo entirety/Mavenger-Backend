@@ -6,7 +6,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 // Import local dependencies
 import configs from './config';
 
-import { HelloWorldModule } from './hello-world/hello-world.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 
@@ -15,7 +14,6 @@ const ENV = process.env.NODE_ENV;
 
 @Module({
   imports: [
-    HelloWorldModule,
     AuthModule,
     ConfigModule.forRoot({
       load: configs,
