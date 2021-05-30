@@ -78,7 +78,7 @@ export class TokenService {
     try {
       return await this.jwtService.verifyAsync(token);
     } catch (err) {
-      throw new UnprocessableEntityException('Refresh token malformed');
+      throw new UnprocessableEntityException('Refresh token expired');
     }
   }
 

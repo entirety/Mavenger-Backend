@@ -35,10 +35,14 @@ export class AuthService {
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload: JwtPayload = { id: user._id, username };
 
-      const found = await this.refreshTokensRepository.findTokenByUserId(user._id);
+      try {
+        const found = await this.refreshTokensRepository.findTokenByUserId(user._id);
 
-      if (found) {
-        await this.refreshTokensRepository.deleteRefreshToken(found.userId);
+        if (found) {
+          await this.refreshTokensRepository.deleteRefreshToken(found.userId);
+        }
+      } catch (err) {
+        throw new Error('test');
       }
 
       const { refreshToken } = await this.tokenService.generateRefreshToken(payload);
