@@ -30,7 +30,8 @@ export class AuthService {
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload: JwtPayload = { id: user._id, username };
       const token: string = await this.tokenService.generateAccessToken(payload);
-      await this.tokenService.generateRefreshToken(payload);
+      // TODO: Implement refresh token validation method and fetch / create refresh token then use
+      // this.tokenService.generateAccessTokenFromRefreshToken to generate the token
 
       return { token };
     }

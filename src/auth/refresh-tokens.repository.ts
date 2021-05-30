@@ -1,9 +1,10 @@
-import { ConflictException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtPayload } from './jwt-payload.interface';
+import { RefreshTokenPayload } from './refresh-token-payload.interface';
 import { RefreshToken, RefreshTokenDocumnet } from './schemas/refresh-token.schema';
 
 @Injectable()
@@ -21,13 +22,13 @@ export class RefreshTokensRepository {
     refreshToken.userId = id;
     refreshToken.isRevoked = false;
 
-    const signOptions = {
+    const payload: RefreshTokenPayload = {
       subject: String(id),
       jwtid: String(refreshToken._id),
       expiresIn: this.configService.get<string>('session.JwtRefreshExpiresIn'),
     };
 
-    const token = await this.jwtService.signAsync({}, signOptions);
+    const token = await this.jwtService.signAsync({}, payload);
 
     refreshToken.token = token;
 
@@ -43,5 +44,13 @@ export class RefreshTokensRepository {
     }
 
     return { refreshToken: token };
+  }
+
+  async findTokenById(id: string): Promise<RefreshToken> {
+    const token = await this.RefreshTokenModel.findById(id).select('-token');
+
+    if (!token) throw new UnauthorizedException();
+
+    return token;
   }
 }
