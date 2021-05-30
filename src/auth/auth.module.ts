@@ -10,6 +10,7 @@ import { User, UserSchema } from './schemas/user.schema';
 import { RefreshToken, RefreshTokenSchema } from './schemas/refresh-token.schema';
 import { UsersRepository } from './users.repository';
 import { RefreshTokensRepository } from './refresh-tokens.repository';
+import { TokenService } from './token.service';
 
 @Module({
   imports: [
@@ -18,14 +19,6 @@ import { RefreshTokensRepository } from './refresh-tokens.repository';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService): Promise<JwtModuleOptions> => ({
         secret: configService.get<string>('session.JwtSecretOrKey'),
-        signOptions: {
-          header: {
-            alg: configService.get<string>('session.JwtSignAlgorithm'),
-          },
-          algorithm: configService.get('session.JwtSignAlgorithm'),
-          // TODO: implement refresh tokens and bring down expiration time on access token
-          expiresIn: configService.get<string>('session.JwtAccessExpiresIn'),
-        },
       }),
       inject: [ConfigService],
     }),
@@ -34,7 +27,7 @@ import { RefreshTokensRepository } from './refresh-tokens.repository';
       { name: RefreshToken.name, schema: RefreshTokenSchema },
     ]),
   ],
-  providers: [AuthService, JwtStrategy, UsersRepository, RefreshTokensRepository],
+  providers: [AuthService, JwtStrategy, UsersRepository, RefreshTokensRepository, TokenService],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })

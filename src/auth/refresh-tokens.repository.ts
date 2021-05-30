@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { JwtPayload } from './jwt-payload.interface';
 import { RefreshToken, RefreshTokenDocumnet } from './schemas/refresh-token.schema';
 
 @Injectable()
@@ -13,16 +14,17 @@ export class RefreshTokensRepository {
     private readonly configService: ConfigService
   ) {}
 
-  async createRefreshToken(userId: string): Promise<{ refreshToken: string }> {
+  async createRefreshToken(jwtPayload: JwtPayload): Promise<{ refreshToken: string }> {
     const refreshToken = new this.RefreshTokenModel();
+    const { id } = jwtPayload;
 
-    refreshToken.userId = userId;
+    refreshToken.userId = id;
     refreshToken.isRevoked = false;
 
     const signOptions = {
-      expiresIn: this.configService.get<string>('session.JwtRefreshExpiresIn'),
-      subject: userId,
+      subject: String(id),
       jwtid: String(refreshToken._id),
+      expiresIn: this.configService.get<string>('session.JwtRefreshExpiresIn'),
     };
 
     const token = await this.jwtService.signAsync({}, signOptions);

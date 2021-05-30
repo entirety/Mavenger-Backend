@@ -8,12 +8,14 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { JwtPayload } from './jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { UsersRepository } from './users.repository';
+import { TokenService } from './token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly UserModel: Model<UserDocument>,
     private readonly usersRepository: UsersRepository,
+    private readonly tokenService: TokenService,
     private jwtService: JwtService
   ) {}
 
@@ -27,7 +29,8 @@ export class AuthService {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload: JwtPayload = { id: user._id, username };
-      const token: string = await this.jwtService.sign(payload);
+      const token: string = await this.tokenService.generateAccessToken(payload);
+      await this.tokenService.generateRefreshToken(payload);
 
       return { token };
     }
