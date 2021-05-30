@@ -7,10 +7,10 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { User, UserSchema } from './schemas/user.schema';
-import { RefreshToken, RefreshTokenSchema } from './schemas/refresh-token.schema';
 import { UsersRepository } from './users.repository';
-import { RefreshTokensRepository } from './refresh-tokens.repository';
-import { TokenService } from './token.service';
+import { RefreshToken, RefreshTokenSchema } from 'src/token/schemas/refresh-token.schema';
+import { RefreshTokensRepository } from 'src/token/refresh-tokens.repository';
+import { TokenService } from 'src/token/token.service';
 
 @Module({
   imports: [

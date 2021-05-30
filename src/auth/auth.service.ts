@@ -8,7 +8,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { JwtPayload } from './jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { UsersRepository } from './users.repository';
-import { TokenService } from './token.service';
+import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class AuthService {

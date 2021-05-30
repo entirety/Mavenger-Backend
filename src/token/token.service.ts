@@ -3,10 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { JwtPayload } from './jwt-payload.interface';
+import { JwtPayload } from 'src/auth/jwt-payload.interface';
+import { User, UserDocument } from 'src/auth/schemas/user.schema';
 import { RefreshTokensRepository } from './refresh-tokens.repository';
 import { RefreshToken } from './schemas/refresh-token.schema';
-import { User, UserDocument } from './schemas/user.schema';
 
 export interface RefreshTokenPayload {
   jti: string;
