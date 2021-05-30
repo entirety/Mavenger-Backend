@@ -16,6 +16,6 @@ export default registerAs(
     JwtSecretOrKey: process.env.JWT_SECRETORKEY || 'secret',
     JwtSignAlgorithm: process.env.JWT_SIGNALGORITHM || 'HS256',
     JwtAccessExpiresIn: process.env.JWT_ACCESSEXPIRESIN || '3600', // Access tokens
-    JwtRefreshExpiresIn: process.env.JWT_ACCESSEXPIRESIN || '3600', // Refresh tokens
+    JwtRefreshExpiresIn: process.env.JWT_REFRESHEXPIRESIN || '3600', // Refresh tokens
   })
 );

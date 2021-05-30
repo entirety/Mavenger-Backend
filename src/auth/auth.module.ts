@@ -7,6 +7,9 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { User, UserSchema } from './schemas/user.schema';
+import { RefreshToken, RefreshTokenSchema } from './schemas/refresh-token.schema';
+import { UsersRepository } from './users.repository';
+import { RefreshTokensRepository } from './refresh-tokens.repository';
 
 @Module({
   imports: [
@@ -26,9 +29,12 @@ import { User, UserSchema } from './schemas/user.schema';
       }),
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: RefreshToken.name, schema: RefreshTokenSchema },
+    ]),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, UsersRepository, RefreshTokensRepository],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })
