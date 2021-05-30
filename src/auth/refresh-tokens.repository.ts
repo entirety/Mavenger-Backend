@@ -29,7 +29,6 @@ export class RefreshTokensRepository {
     };
 
     const token = await this.jwtService.signAsync({}, payload);
-
     refreshToken.token = token;
 
     try {
@@ -38,7 +37,6 @@ export class RefreshTokensRepository {
       if (err.code === 11000) {
         throw new ConflictException();
       } else {
-        console.log(err);
         throw new InternalServerErrorException();
       }
     }

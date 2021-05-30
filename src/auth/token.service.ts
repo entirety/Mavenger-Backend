@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,18 +7,18 @@ import { JwtPayload } from './jwt-payload.interface';
 import { RefreshTokensRepository } from './refresh-tokens.repository';
 import { RefreshToken } from './schemas/refresh-token.schema';
 import { User, UserDocument } from './schemas/user.schema';
-import { UsersRepository } from './users.repository';
 
 export interface RefreshTokenPayload {
   jti: string;
   sub: string;
 }
+
+// TODO: Move token service to own folder
 @Injectable()
 export class TokenService {
   constructor(
     @InjectModel(User.name) private readonly UserModel: Model<UserDocument>,
     private readonly refreshTokensRepository: RefreshTokensRepository,
-    private readonly usersRepository: UsersRepository,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService
   ) {}
@@ -43,11 +43,6 @@ export class TokenService {
   }
 
   async generateRefreshToken(jwtPayload: JwtPayload): Promise<{ refreshToken: string }> {
-    const { id } = jwtPayload;
-    const found = this.refreshTokensRepository.findTokenByUserId(id);
-
-    if (found) throw new ConflictException();
-
     return this.refreshTokensRepository.createRefreshToken(jwtPayload);
   }
 
