@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class RefreshToken {
-  @Prop()
+  @Prop({ unique: true })
   userId: string;
 
   @Prop()

@@ -16,8 +16,8 @@ export class RefreshTokensRepository {
   ) {}
 
   async createRefreshToken(jwtPayload: JwtPayload): Promise<{ refreshToken: string }> {
-    const refreshToken = new this.RefreshTokenModel();
     const { id } = jwtPayload;
+    const refreshToken = new this.RefreshTokenModel();
 
     refreshToken.userId = id;
     refreshToken.isRevoked = false;
@@ -48,6 +48,14 @@ export class RefreshTokensRepository {
 
   async findTokenById(id: string): Promise<RefreshToken> {
     const token = await this.RefreshTokenModel.findById(id).select('-token');
+
+    if (!token) throw new UnauthorizedException();
+
+    return token;
+  }
+
+  async findTokenByUserId(id: string): Promise<RefreshToken> {
+    const token = await this.RefreshTokenModel.findOne({ userId: id }).select('-token');
 
     if (!token) throw new UnauthorizedException();
 

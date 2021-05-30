@@ -12,7 +12,7 @@ import { UserGroups } from './user-groups.enum';
 export class UsersRepository {
   constructor(@InjectModel(User.name) private readonly UserModel: Model<UserDocument>) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<void> {
+  async createUser(createUserDto: CreateUserDto): Promise<{ id: string; username: string }> {
     const { username, email, password } = createUserDto;
 
     const found = await this.UserModel.findOne({ $or: [{ username }, { email }] });
@@ -33,6 +33,7 @@ export class UsersRepository {
 
     try {
       await createdUser.save();
+      return { id: createdUser._id, username: createdUser.username };
     } catch (err) {
       if (err.code === 11000) {
         throw new ConflictException();

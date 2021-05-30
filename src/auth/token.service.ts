@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -43,6 +43,11 @@ export class TokenService {
   }
 
   async generateRefreshToken(jwtPayload: JwtPayload): Promise<{ refreshToken: string }> {
+    const { id } = jwtPayload;
+    const found = this.refreshTokensRepository.findTokenByUserId(id);
+
+    if (found) throw new ConflictException();
+
     return this.refreshTokensRepository.createRefreshToken(jwtPayload);
   }
 
