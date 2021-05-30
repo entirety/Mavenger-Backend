@@ -20,7 +20,8 @@ import { User, UserSchema } from './schemas/user.schema';
             alg: configService.get<string>('session.JwtSignAlgorithm'),
           },
           algorithm: configService.get('session.JwtSignAlgorithm'),
-          expiresIn: 3600,
+          // TODO: implement refresh tokens and bring down expiration time on access token
+          expiresIn: configService.get('session.JwtAccessExpiresIn'),
         },
       }),
       inject: [ConfigService],
