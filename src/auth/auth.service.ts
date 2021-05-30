@@ -7,17 +7,13 @@ import { User, UserDocument } from './schemas/user.schema';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { JwtPayload } from './jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
-import { RefreshToken, RefreshTokenDocumnet } from './schemas/refresh-token.schema';
 import { UsersRepository } from './users.repository';
-import { RefreshTokensRepository } from './refresh-tokens.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly UserModel: Model<UserDocument>,
-    @InjectModel(RefreshToken.name) private readonly RefreshModel: Model<RefreshTokenDocumnet>,
     private readonly usersRepository: UsersRepository,
-    private readonly refreshTokensRepository: RefreshTokensRepository,
     private jwtService: JwtService
   ) {}
 
@@ -30,12 +26,6 @@ export class AuthService {
     const user = await this.UserModel.findOne({ username: { $regex: new RegExp(`^${username.toLowerCase()}`, 'i') } });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      // Test Code
-      const rToken = await this.refreshTokensRepository.createRefreshToken(user.id);
-
-      console.log(rToken);
-      // End Test Code
-
       const payload: JwtPayload = { id: user._id, username };
       const token: string = await this.jwtService.sign(payload);
 
