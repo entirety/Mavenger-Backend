@@ -20,7 +20,7 @@ export class RefreshTokensRepository {
     refreshToken.isRevoked = false;
 
     const signOptions = {
-      expiresIn: this.configService.get<number>('session.JwtRefreshExpiresIn'),
+      expiresIn: this.configService.get<string>('session.JwtRefreshExpiresIn'),
       subject: userId,
       jwtid: String(refreshToken._id),
     };

@@ -24,7 +24,7 @@ import { RefreshTokensRepository } from './refresh-tokens.repository';
           },
           algorithm: configService.get('session.JwtSignAlgorithm'),
           // TODO: implement refresh tokens and bring down expiration time on access token
-          expiresIn: configService.get('session.JwtAccessExpiresIn'),
+          expiresIn: configService.get<string>('session.JwtAccessExpiresIn'),
         },
       }),
       inject: [ConfigService],
