@@ -11,6 +11,9 @@ export class RefreshToken {
 
   @Prop()
   token: string;
+
+  @Prop()
+  expiration: Date;
 }
 
 export type RefreshTokenDocumnet = RefreshToken & Document;

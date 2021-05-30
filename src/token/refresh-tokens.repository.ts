@@ -22,6 +22,10 @@ export class RefreshTokensRepository {
     refreshToken.userId = id;
     refreshToken.isRevoked = false;
 
+    const expiresIn = new Date();
+    expiresIn.setDate(expiresIn.getDate() + 3);
+    refreshToken.expiration = expiresIn;
+
     const payload: RefreshTokenPayload = {
       subject: String(id),
       jwtid: String(refreshToken._id),
@@ -58,5 +62,9 @@ export class RefreshTokensRepository {
     if (!token) throw new UnauthorizedException();
 
     return token;
+  }
+
+  async deleteRefreshToken(id: string): Promise<void> {
+    await this.RefreshTokenModel.findOneAndDelete({ userId: id });
   }
 }

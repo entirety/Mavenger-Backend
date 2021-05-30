@@ -9,12 +9,14 @@ import { JwtPayload } from './jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { UsersRepository } from './users.repository';
 import { TokenService } from 'src/token/token.service';
+import { RefreshTokensRepository } from 'src/token/refresh-tokens.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly UserModel: Model<UserDocument>,
     private readonly usersRepository: UsersRepository,
+    private readonly refreshTokensRepository: RefreshTokensRepository,
     private readonly tokenService: TokenService,
     private jwtService: JwtService
   ) {}
@@ -32,9 +34,16 @@ export class AuthService {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload: JwtPayload = { id: user._id, username };
-      const token: string = await this.tokenService.generateAccessToken(payload);
-      // TODO: Implement refresh token validation method and fetch / create refresh token then use
-      // this.tokenService.generateAccessTokenFromRefreshToken to generate the token
+
+      const found = await this.refreshTokensRepository.findTokenByUserId(user._id);
+
+      if (found) {
+        await this.refreshTokensRepository.deleteRefreshToken(found.userId);
+      }
+
+      const { refreshToken } = await this.tokenService.generateRefreshToken(payload);
+
+      const token: string = await this.tokenService.generateAccessTokenFromRefreshToken(refreshToken);
 
       return { token };
     }
