@@ -2,7 +2,7 @@ import { ConflictException, Injectable, InternalServerErrorException, Unauthoriz
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { JwtPayload } from 'src/auth/jwt-payload.interface';
 import { RefreshTokenPayload } from './refresh-token-payload.interface';
 import { RefreshToken, RefreshTokenDocumnet } from './schemas/refresh-token.schema';
@@ -17,12 +17,12 @@ export class RefreshTokensRepository {
 
   async createRefreshToken(jwtPayload: JwtPayload): Promise<{ refreshToken: string }> {
     const { id } = jwtPayload;
-    const refreshToken = new this.RefreshTokenModel();
+    const refreshToken: RefreshTokenDocumnet = new this.RefreshTokenModel();
 
-    refreshToken.userId = id;
+    refreshToken.userId = Types.ObjectId(id);
     refreshToken.isRevoked = false;
 
-    const expiresIn = new Date();
+    const expiresIn: Date = new Date();
     expiresIn.setDate(expiresIn.getDate() + 3);
     refreshToken.expiration = expiresIn;
 
@@ -32,7 +32,7 @@ export class RefreshTokensRepository {
       expiresIn: this.configService.get<string>('session.JwtRefreshExpiresIn'),
     };
 
-    const token = await this.jwtService.signAsync({}, payload);
+    const token: string = await this.jwtService.signAsync({}, payload);
     refreshToken.token = token;
 
     try {
@@ -49,15 +49,15 @@ export class RefreshTokensRepository {
   }
 
   async findTokenById(id: string): Promise<RefreshToken> {
-    const token = await this.RefreshTokenModel.findById(id).select('-token');
+    const token: RefreshTokenDocumnet = await this.RefreshTokenModel.findById(id);
 
     if (!token) throw new UnauthorizedException();
 
     return token;
   }
 
-  async findTokenByUserId(id: string): Promise<RefreshToken> {
-    const token = await this.RefreshTokenModel.findOne({ userId: id }).select('-token');
+  async findTokenByUserId(userId: string): Promise<RefreshToken> {
+    const token: RefreshTokenDocumnet = await this.RefreshTokenModel.findOne({ userId: Types.ObjectId(userId) });
 
     if (!token) throw new UnauthorizedException();
 
@@ -65,6 +65,6 @@ export class RefreshTokensRepository {
   }
 
   async deleteRefreshToken(id: string): Promise<void> {
-    await this.RefreshTokenModel.findOneAndDelete({ userId: id });
+    await this.RefreshTokenModel.findByIdAndDelete(id);
   }
 }

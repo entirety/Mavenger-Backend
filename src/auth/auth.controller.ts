@@ -18,6 +18,11 @@ export class AuthController {
     return this.authService.signIn(authCredentialsDto);
   }
 
+  @Get('/refresh')
+  async refreshAccessToken(@Body('userId') userId: string): Promise<{ user: User; token: string }> {
+    return this.authService.refreshAccessToken(userId);
+  }
+
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<User> {
     return this.authService.getUserById(id);

@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 @Schema()
 export class RefreshToken {
-  @Prop({ unique: true })
-  userId: string;
+  _id: string;
+
+  @Prop({ type: Types.ObjectId, ref: 'user', unique: true })
+  userId: Types.ObjectId;
 
   @Prop()
   isRevoked: boolean;

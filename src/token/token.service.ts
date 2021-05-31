@@ -54,7 +54,7 @@ export class TokenService {
 
     const token = await this.refreshTokensRepository.findTokenById(jti);
 
-    if (!token) throw new UnauthorizedException('Refresh token invalid');
+    if (!token) throw new UnauthorizedException('Refresh token not found');
 
     if (token.isRevoked) throw new UnauthorizedException('Refresh token revoked');
 
@@ -69,9 +69,18 @@ export class TokenService {
     const { user } = await this.resolveRefreshToken(refreshToken);
     const payload: JwtPayload = { id: user._id, username: user.username };
 
-    const token = await this.generateAccessToken(payload);
+    const token: string = await this.generateAccessToken(payload);
 
     return token;
+  }
+
+  async refreshAccessToken(userId: string): Promise<{ user: User; token: string }> {
+    const refreshToken: RefreshToken = await this.refreshTokensRepository.findTokenByUserId(userId);
+    const { user } = await this.resolveRefreshToken(refreshToken.token);
+
+    const token: string = await this.generateAccessTokenFromRefreshToken(refreshToken.token);
+
+    return { user, token };
   }
 
   private async decodeRefreshToken(token: string): Promise<RefreshTokenPayload> {

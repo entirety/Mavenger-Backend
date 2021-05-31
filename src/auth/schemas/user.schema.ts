@@ -4,6 +4,8 @@ import { UserGroups } from '../user-groups.enum';
 
 @Schema()
 export class User {
+  _id: string;
+
   @Prop({ required: true })
   name: string;
 

@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersRepository } from './users.repository';
 import { TokenService } from 'src/token/token.service';
 import { RefreshTokensRepository } from 'src/token/refresh-tokens.repository';
+import { RefreshToken } from 'src/token/schemas/refresh-token.schema';
 
 @Injectable()
 export class AuthService {
@@ -30,19 +31,21 @@ export class AuthService {
 
   async signIn(authCredentialsDto: AuthCredentialsDto): Promise<{ token: string }> {
     const { username, password } = authCredentialsDto;
-    const user = await this.UserModel.findOne({ username: { $regex: new RegExp(`^${username.toLowerCase()}`, 'i') } });
+    const user: UserDocument = await this.UserModel.findOne({
+      username: { $regex: new RegExp(`^${username.toLowerCase()}`, 'i') },
+    });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload: JwtPayload = { id: user._id, username };
 
       try {
-        const found = await this.refreshTokensRepository.findTokenByUserId(user._id);
+        const found: RefreshToken = await this.refreshTokensRepository.findTokenByUserId(user._id);
 
         if (found) {
-          await this.refreshTokensRepository.deleteRefreshToken(found.userId);
+          await this.refreshTokensRepository.deleteRefreshToken(found._id);
         }
       } catch (err) {
-        throw new Error('test');
+        throw new Error();
       }
 
       const { refreshToken } = await this.tokenService.generateRefreshToken(payload);
@@ -56,5 +59,9 @@ export class AuthService {
 
   async getUserById(id: string): Promise<User> {
     return this.UserModel.findById(id).select('-password');
+  }
+
+  async refreshAccessToken(userId: string): Promise<{ user: User; token: string }> {
+    return this.tokenService.refreshAccessToken(userId);
   }
 }

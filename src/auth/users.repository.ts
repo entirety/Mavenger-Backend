@@ -15,11 +15,11 @@ export class UsersRepository {
   async createUser(createUserDto: CreateUserDto): Promise<{ id: string; username: string }> {
     const { username, email, password } = createUserDto;
 
-    const found = await this.UserModel.findOne({ $or: [{ username }, { email }] });
+    const found: UserDocument = await this.UserModel.findOne({ $or: [{ username }, { email }] });
 
     if (found) throw new ConflictException();
 
-    const createdUser = new this.UserModel(createUserDto);
+    const createdUser: UserDocument = new this.UserModel(createUserDto);
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
