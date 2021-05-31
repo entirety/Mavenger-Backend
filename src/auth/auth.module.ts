@@ -11,6 +11,7 @@ import { UsersRepository } from './users.repository';
 import { RefreshToken, RefreshTokenSchema } from 'src/token/schemas/refresh-token.schema';
 import { RefreshTokensRepository } from 'src/token/refresh-tokens.repository';
 import { TokenService } from 'src/token/token.service';
+import { JWTGuard } from './jwt.guard';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { TokenService } from 'src/token/token.service';
       { name: RefreshToken.name, schema: RefreshTokenSchema },
     ]),
   ],
-  providers: [AuthService, JwtStrategy, UsersRepository, RefreshTokensRepository, TokenService],
+  providers: [AuthService, JwtStrategy, UsersRepository, RefreshTokensRepository, TokenService, JWTGuard],
   controllers: [AuthController],
   exports: [JwtStrategy, PassportModule],
 })

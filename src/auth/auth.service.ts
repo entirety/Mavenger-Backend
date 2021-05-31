@@ -41,9 +41,7 @@ export class AuthService {
       try {
         const found: RefreshToken = await this.refreshTokensRepository.findTokenByUserId(user._id);
 
-        if (found) {
-          await this.refreshTokensRepository.deleteRefreshToken(found._id);
-        }
+        if (found) await this.refreshTokensRepository.deleteRefreshToken(found._id);
       } catch (err) {
         throw new Error();
       }

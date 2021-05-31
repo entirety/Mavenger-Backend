@@ -4,9 +4,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { PassportStrategy } from '@nestjs/passport';
 import { Model } from 'mongoose';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { JwtPayload } from './jwt-payload.interface';
 import { User, UserDocument } from './schemas/user.schema';
 
+export interface AccessTokenInterface {
+  sub: number;
+}
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -20,9 +22,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload): Promise<User> {
-    const { id } = payload;
-    const user: User = await this.UserModel.findById(id).select('-password');
+  async validate(payload: AccessTokenInterface): Promise<User> {
+    const { sub } = payload;
+    const user: User = await this.UserModel.findById(sub).select('-password');
 
     if (!user) throw new UnauthorizedException();
 
