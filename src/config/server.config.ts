@@ -8,7 +8,10 @@ export interface ServerConfig {
 }
 
 // Export Server config
-export default registerAs('server', (): ServerConfig => ({
-  port: process.env.PORT || 3000,
-  host: process.env.HOST || 'localhost'
-}));
+export default registerAs(
+  'server',
+  (): ServerConfig => ({
+    port: process.env.PORT || 5000,
+    host: process.env.HOST || 'localhost',
+  })
+);
