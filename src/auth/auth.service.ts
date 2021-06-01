@@ -32,10 +32,11 @@ export class AuthService {
   async signIn(authCredentialsDto: AuthCredentialsDto): Promise<{ token: string }> {
     const { username, password } = authCredentialsDto;
     const user: UserDocument = await this.UserModel.findOne({
-      username: { $regex: new RegExp(`^${username.toLowerCase()}`, 'i') },
+      username: { $regex: new RegExp(`^${username}$`), $options: 'i' },
     });
 
     if (user && (await bcrypt.compare(password, user.password))) {
+      console.log(user);
       const payload: JwtPayload = { id: user._id, username };
 
       try {
