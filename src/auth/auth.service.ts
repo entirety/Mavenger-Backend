@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -22,11 +22,16 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async signUp(createUserDto: CreateUserDto): Promise<void> {
-    const { id, username } = await this.usersRepository.createUser(createUserDto);
-    const payload: JwtPayload = { id, username };
+  async signUp(createUserDto: CreateUserDto): Promise<{ token: string }> {
+    const createdUser: UserDocument = await this.usersRepository.createUser(createUserDto);
+    const payload: JwtPayload = { id: createdUser._id, username: createdUser.username };
 
-    await this.tokenService.generateRefreshToken(payload);
+    if (!createdUser) throw new InternalServerErrorException();
+
+    const { refreshToken } = await this.tokenService.generateRefreshToken(payload);
+    const token: string = await this.tokenService.generateAccessTokenFromRefreshToken(refreshToken);
+
+    return { token };
   }
 
   async signIn(authCredentialsDto: AuthCredentialsDto): Promise<{ token: string }> {
