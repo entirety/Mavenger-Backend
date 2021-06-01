@@ -39,7 +39,6 @@ export class RefreshTokensRepository {
     try {
       await newRefreshToken.save();
     } catch (err) {
-      console.log(err);
       if (err.code === 11000) {
         throw new ConflictException();
       } else {

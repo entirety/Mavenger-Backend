@@ -36,7 +36,6 @@ export class AuthService {
     });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      console.log(user);
       const payload: JwtPayload = { id: user._id, username };
 
       try {
