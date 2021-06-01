@@ -59,7 +59,7 @@ export class AuthService {
     return this.UserModel.findById(id).select('-password');
   }
 
-  async refreshAccessToken(userId: string): Promise<{ user: User; token: string }> {
-    return this.tokenService.refreshAccessToken(userId);
+  async refreshAccessToken(id: string): Promise<{ user: User; token: string }> {
+    return this.tokenService.refreshAccessToken(id);
   }
 }

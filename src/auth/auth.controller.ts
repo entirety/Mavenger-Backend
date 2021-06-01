@@ -19,8 +19,8 @@ export class AuthController {
   }
 
   @Get('/refresh')
-  async refreshAccessToken(@Body('userId') userId: string): Promise<{ user: User; token: string }> {
-    return this.authService.refreshAccessToken(userId);
+  async refreshAccessToken(@Body('id') id: string): Promise<{ user: User; token: string }> {
+    return this.authService.refreshAccessToken(id);
   }
 
   @Get(':id')

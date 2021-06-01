@@ -17,27 +17,29 @@ export class RefreshTokensRepository {
 
   async createRefreshToken(jwtPayload: JwtPayload): Promise<{ refreshToken: string }> {
     const { id } = jwtPayload;
-    const refreshToken: RefreshTokenDocumnet = new this.RefreshTokenModel();
 
-    refreshToken.userId = Types.ObjectId(id);
-    refreshToken.isRevoked = false;
+    const newRefreshToken: RefreshTokenDocumnet = new this.RefreshTokenModel({
+      user: Types.ObjectId(id),
+      isRevoked: false,
+    });
 
     const expiresIn: Date = new Date();
     expiresIn.setDate(expiresIn.getDate() + 3);
-    refreshToken.expiration = expiresIn;
+    newRefreshToken.expiration = expiresIn;
 
     const payload: RefreshTokenPayload = {
       subject: String(id),
-      jwtid: String(refreshToken._id),
+      jwtid: String(newRefreshToken._id),
       expiresIn: this.configService.get<string>('session.JwtRefreshExpiresIn'),
     };
 
     const token: string = await this.jwtService.signAsync({}, payload);
-    refreshToken.token = token;
+    newRefreshToken.token = token;
 
     try {
-      await refreshToken.save();
+      await newRefreshToken.save();
     } catch (err) {
+      console.log(err);
       if (err.code === 11000) {
         throw new ConflictException();
       } else {
@@ -56,8 +58,8 @@ export class RefreshTokensRepository {
     return token;
   }
 
-  async findTokenByUserId(userId: string): Promise<RefreshToken> {
-    const token: RefreshTokenDocumnet = await this.RefreshTokenModel.findOne({ userId: Types.ObjectId(userId) });
+  async findTokenByUserId(id: string): Promise<RefreshToken> {
+    const token: RefreshTokenDocumnet = await this.RefreshTokenModel.findOne({ user: Types.ObjectId(id) });
 
     if (!token) throw new UnauthorizedException();
 

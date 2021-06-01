@@ -74,8 +74,8 @@ export class TokenService {
     return token;
   }
 
-  async refreshAccessToken(userId: string): Promise<{ user: User; token: string }> {
-    const refreshToken: RefreshToken = await this.refreshTokensRepository.findTokenByUserId(userId);
+  async refreshAccessToken(id: string): Promise<{ user: User; token: string }> {
+    const refreshToken: RefreshToken = await this.refreshTokensRepository.findTokenByUserId(id);
     const { user } = await this.resolveRefreshToken(refreshToken.token);
 
     const token: string = await this.generateAccessTokenFromRefreshToken(refreshToken.token);

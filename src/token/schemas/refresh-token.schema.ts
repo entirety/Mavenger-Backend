@@ -6,7 +6,7 @@ export class RefreshToken {
   _id: string;
 
   @Prop({ type: Types.ObjectId, ref: 'user', unique: true })
-  userId: Types.ObjectId;
+  user: Types.ObjectId;
 
   @Prop()
   isRevoked: boolean;

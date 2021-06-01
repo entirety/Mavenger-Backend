@@ -17,7 +17,13 @@ export class UsersRepository {
 
     const found: UserDocument = await this.UserModel.findOne({ $or: [{ username }, { email }] });
 
-    if (found) throw new ConflictException();
+    if (found) {
+      throw new ConflictException({
+        statusCode: 409,
+        message: ['username or email already in use'],
+        error: 'Conflict error',
+      });
+    }
 
     const createdUser: UserDocument = new this.UserModel(createUserDto);
 
