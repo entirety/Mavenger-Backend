@@ -5,12 +5,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { JwtPayload } from 'src/auth/jwt-payload.interface';
 import { RefreshTokenPayload } from './refresh-token-payload.interface';
-import { RefreshToken, RefreshTokenDocumnet } from './schemas/refresh-token.schema';
+import { RefreshToken, RefreshTokenDocument } from './schemas/refresh-token.schema';
 
 @Injectable()
 export class RefreshTokensRepository {
   constructor(
-    @InjectModel(RefreshToken.name) private readonly RefreshTokenModel: Model<RefreshTokenDocumnet>,
+    @InjectModel(RefreshToken.name) private readonly RefreshTokenModel: Model<RefreshTokenDocument>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService
   ) {}
@@ -18,7 +18,7 @@ export class RefreshTokensRepository {
   async createRefreshToken(jwtPayload: JwtPayload): Promise<{ refreshToken: string }> {
     const { id } = jwtPayload;
 
-    const newRefreshToken: RefreshTokenDocumnet = new this.RefreshTokenModel({
+    const newRefreshToken: RefreshTokenDocument = new this.RefreshTokenModel({
       user: Types.ObjectId(id),
       isRevoked: false,
     });
@@ -50,7 +50,7 @@ export class RefreshTokensRepository {
   }
 
   async findTokenById(id: string): Promise<RefreshToken> {
-    const token: RefreshTokenDocumnet = await this.RefreshTokenModel.findById(id);
+    const token: RefreshTokenDocument = await this.RefreshTokenModel.findById(id);
 
     if (!token) throw new UnauthorizedException();
 
@@ -58,7 +58,7 @@ export class RefreshTokensRepository {
   }
 
   async findTokenByUserId(id: string): Promise<RefreshToken> {
-    const token: RefreshTokenDocumnet = await this.RefreshTokenModel.findOne({ user: Types.ObjectId(id) });
+    const token: RefreshTokenDocument = await this.RefreshTokenModel.findOne({ user: Types.ObjectId(id) });
 
     if (!token) throw new UnauthorizedException();
 
